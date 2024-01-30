@@ -1,59 +1,34 @@
-resource "aws_ecr_repository" "app" {
-  name                 = "${var.prefix}-app"
-  image_tag_mutability = "MUTABLE"
-  force_delete         = true
 
-  image_scanning_configuration {
-    scan_on_push = true
-  }
+
+output "cluster_name" {
+  description = "Name of EKS cluster in AWS."
+  value       = module.eks.cluster_name
 }
 
-resource "aws_ecr_repository" "proxy" {
-  name                 = "${var.prefix}-proxy"
-  image_tag_mutability = "MUTABLE"
-  force_delete         = true
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
+output "region" {
+  description = "AWS region"
+  value       = var.region
 }
 
-resource "aws_iam_policy" "allow_ecr_app" {
-  name = "${local.cluster_name}-read-ecr-app"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:BatchGetImage",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:GetAuthorizationToken"
-        ],
-        Resource = aws_ecr_repository.app.arn
-      }
-    ]
-  })
+output "ecr_app_url" {
+  description = "ECR repo name for app"
+  value       = aws_ecr_repository.app.repository_url
 }
 
-resource "aws_iam_policy" "allow_ecr_proxy" {
-  name = "${local.cluster_name}-eks-read-ecr-proxy"
+output "ecr_proxy_url" {
+  description = "ECR repo name for proxy"
+  value       = aws_ecr_repository.proxy.repository_url
+}
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:BatchGetImage",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:GetAuthorizationToken"
-        ],
-        Resource = aws_ecr_repository.proxy.arn
-      }
-    ]
-  })
+output "efs_csi_sa_role" {
+  value = module.efs_csi_irsa_role.iam_role_arn
+}
+
+output "efs_id" {
+  value = aws_efs_file_system.data.id
+}
+
+output "db_instance_address" {
+  description = "The address of the RDS instance"
+  value       = module.db.db_instance_address
 }
