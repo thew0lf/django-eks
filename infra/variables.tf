@@ -11,3 +11,8 @@ variable "db_password" {
   description = "RDS Password"
   default = "samplepassword123"
 }
+
+variable "my_ip"{
+  description = "Personal IP Address"
+  default = "162.238.1.95"
+}
