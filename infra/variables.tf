@@ -6,3 +6,8 @@ variable "prefix" {
   description = "Prefix to be assigned to resources"
   default = "django-k8s"
 }
+
+variable "db_password" {
+  description = "RDS Password"
+  default = "samplepassword123"
+}
