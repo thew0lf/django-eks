@@ -2,7 +2,7 @@ module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
   version = "~> 4.0.1"
 
-  name = "${var.prefix}vpc"
+  name = "${var.prefix}-vpc"
   cidr = "10.0.0.0/16"
   azs = slice(data.aws_availability_zones.available.names,0,3)
 
@@ -23,5 +23,4 @@ module "vpc" {
     "kubernetes.io/cluster/${var.prefix}-cluster" = "shared"
     "kubernetes.io/role/elb"                      = 1
   }
-
 }

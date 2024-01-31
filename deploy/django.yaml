@@ -13,7 +13,6 @@ spec:
   type: LoadBalancer
 
 ---
-
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -22,13 +21,13 @@ metadata:
     app: django
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: efs-sc
   resources:
     requests:
-      storage: 10Gi
+      storage: 5Gi
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,9 +52,7 @@ spec:
           persistentVolumeClaim:
             claimName: django-app-pvc
       containers:
-
-        - image: django-app:latest
-          imagePullPolicy: Never
+        - image: 325588978350.dkr.ecr.us-east-1.amazonaws.com/django-k8s-app:latest #app Image
           name: app
           ports:
             - containerPort: 8080
@@ -65,13 +62,13 @@ spec:
               mountPath: /vol/web
           env:
             - name: DB_HOST
-              value: django-postgres
+              value: django-k8s-db.cl0ise26ifqe.us-east-1.rds.amazonaws.com #DB HOST URL
             - name: DB_NAME
-              value: djangodb
+              value: djangoproject
             - name: DB_USER
               value: djangouser
             - name: ALLOWED_HOSTS
-              value: '127.0.0.1,localhost'
+              value: "ab2cf8b1997674e938bdb1aafdc018ac-2044014163.us-east-1.elb.amazonaws.com"#ELB Host Address
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
@@ -83,8 +80,7 @@ spec:
                   name: django
                   key: secret
 
-        - image: django-proxy:latest
-          imagePullPolicy: Never
+        - image: 325588978350.dkr.ecr.us-east-1.amazonaws.com/django-k8s-proxy:latest #proxy image
           name: proxy
           ports:
             - containerPort: 8000
@@ -94,6 +90,6 @@ spec:
               mountPath: /vol/web
           env:
             - name: APP_HOST
-              value: '127.0.0.1'
+              value: "127.0.0.1"
             - name: APP_PORT
-              value: '8080'
+              value: "8080"
