@@ -1,3 +1,8 @@
+
+resources:
+  - django.yaml
+  - storageclass.yaml
+
 secretGenerator:
   - name: db-password
     literals:
@@ -5,6 +10,3 @@ secretGenerator:
   - name: django
     literals:
       - secret=secretkey123
-resources:
-  - django.yaml
-  - storageclass.yaml
