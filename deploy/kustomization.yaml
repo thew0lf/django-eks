@@ -1,12 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 
 resources:
-  - django.yaml
-  - storageclass.yaml
+- django.yaml
+- storageclass.yaml
 
 secretGenerator:
-  - name: db-password
-    literals:
-      - password=samplepassword123
-  - name: django
-    literals:
-      - secret=secretkey123
+- literals:
+  - password=samplepassword123
+  name: db-password
+- literals:
+  - secret=secretkey123
+  name: django
